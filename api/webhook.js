@@ -72,7 +72,7 @@ export default async function handler(req, res) {
       order_id: String(orderId || Date.now()),
       funil: funil
     };
-
+console.log('DADOS PARA O SUPABASE:', venda);
     const resposta = await fetch(
       `${SUPABASE_URL}/rest/v1/funil_vendas`,
       {
@@ -89,7 +89,7 @@ export default async function handler(req, res) {
 
     if (!resposta.ok) {
       const erro = await resposta.text();
-
+console.error('ERRO SUPABASE:', erro);
       return res.status(500).json({
         success: false,
         erro
