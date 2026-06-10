@@ -13,41 +13,12 @@ export default async function handler(req, res) {
 
     console.log('Kiwify:', body);
 
-    const orderId =
-      body.order_id ||
-      body.id ||
-      body.order?.id ||
-      body.sale?.id ||
-      body.transaction_id ||
-      '';
-
-    const email =
-      body.customer?.email ||
-      body.client?.email ||
-      body.buyer?.email ||
-      body.email ||
-      '';
-
-    const produto =
-      body.product?.name ||
-      body.product_name ||
-      body.order?.product_name ||
-      body.item?.name ||
-      '';
-
-    const valor =
-      body.price ||
-      body.amount ||
-      body.total ||
-      body.order?.total ||
-      body.value ||
-      null;
-
-    const status =
-      body.status ||
-      body.order_status ||
-      body.event ||
-      'received';
+    const orderId = body.order_id || '';
+    const email = body.Customer?.email || '';
+    const produto = body.Product?.product_name || '';
+    const nome = body.Customer?.full_name || '';
+    const status = body.order_status || '';
+    const valor = body.payment_merchant_id || body.price || body.amount || body.total || null;
 
     const visitorId =
       body.visitor_id ||
@@ -72,24 +43,24 @@ export default async function handler(req, res) {
       order_id: String(orderId || Date.now()),
       funil: funil
     };
-console.log('DADOS PARA O SUPABASE:', venda);
-    const resposta = await fetch(
-      `${SUPABASE_URL}/rest/v1/funil_vendas`,
-      {
-        method: 'POST',
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-          Prefer: 'return=minimal'
-        },
-        body: JSON.stringify(venda)
-      }
-    );
+
+    console.log('DADOS PARA O SUPABASE:', venda);
+
+    const resposta = await fetch(`${SUPABASE_URL}/rest/v1/funil_vendas`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify(venda)
+    });
 
     if (!resposta.ok) {
       const erro = await resposta.text();
-console.error('ERRO SUPABASE:', erro);
+      console.error('ERRO SUPABASE:', erro);
+
       return res.status(500).json({
         success: false,
         erro
