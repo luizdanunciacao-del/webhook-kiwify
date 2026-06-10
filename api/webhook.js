@@ -11,6 +11,8 @@ export default async function handler(req, res) {
   try {
     const body = req.body || {};
 
+    console.log('Kiwify:', body);
+
     const orderId =
       body.order_id ||
       body.id ||
@@ -71,19 +73,23 @@ export default async function handler(req, res) {
       funil: funil
     };
 
-    const resposta = await fetch(`${SUPABASE_URL}/rest/v1/funil_vendas`, {
-      method: 'POST',
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=minimal'
-      },
-      body: JSON.stringify(venda)
-    });
+    const resposta = await fetch(
+      `${SUPABASE_URL}/rest/v1/funil_vendas`,
+      {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal'
+        },
+        body: JSON.stringify(venda)
+      }
+    );
 
     if (!resposta.ok) {
       const erro = await resposta.text();
+
       return res.status(500).json({
         success: false,
         erro
